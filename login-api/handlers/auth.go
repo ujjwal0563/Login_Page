@@ -19,10 +19,12 @@ type LoginRequest struct {
 }
 
 type SignupRequest struct {
-	Email    string `json:"email"`
-	Password string `json:"password"`
+	Name        string `json:"name"`
+	Surname     string `json:"surname"`
+	Email       string `json:"email"`
+	Password    string `json:"password"`
+	PhoneNumber string `json:"phone_number"`
 }
-
 func Login(c *gin.Context) {
 	var req LoginRequest
 	var user models.User

@@ -14,6 +14,8 @@ func main() {
 	r.POST("/signup", handlers.Signup)
 	r.POST("/login", handlers.Login)
 	r.POST("/logout", handlers.Logout)
+	r.POST("/forgot-password", handlers.ForgotPassword)
+	r.POST("/reset-password", handlers.ResetPassword)
 
 	r.Run(":8080")
 }

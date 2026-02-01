@@ -7,8 +7,6 @@ import (
 )
 
 func Logout(c *gin.Context) {
-	c.JSON(http.StatusOK, gin.H{
-		"message": "Logout successful",
 	authHeader := c.GetHeader("Authorization")
 	if authHeader == "" {
 		c.JSON(http.StatusUnauthorized, gin.H{

@@ -2,6 +2,7 @@ package handlers
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"time"
 
@@ -25,31 +26,45 @@ type SignupRequest struct {
 	Password    string `json:"password"`
 	PhoneNumber string `json:"phone_number"`
 }
+
 func Login(c *gin.Context) {
 	var req LoginRequest
 	var user models.User
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request",
+		})
 		return
 	}
 
 	if !utils.IsValidEmail(req.Email) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email format"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid email format",
+		})
 		return
 	}
 
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
-	err := db.UserCollection.FindOne(ctx, bson.M{"email": req.Email}).Decode(&user)
+	err := db.UserCollection.FindOne(
+		ctx,
+		bson.M{"email": req.Email},
+	).Decode(&user)
+
 	if err != nil {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "User not found"})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error": "User not found",
+		})
 		return
 	}
 
 	if !utils.CheckPassword(user.Password, req.Password) {
-		c.JSON(http.StatusUnauthorized, gin.H{"error": "Wrong password"})
+		c.JSON(http.StatusUnauthorized, gin.H{
+			"error":  "Wrong password",
+			"action": "forgot-password", 
+		})
 		return
 	}
 
@@ -65,16 +80,19 @@ func Signup(c *gin.Context) {
 	var req SignupRequest
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request",
+		})
 		return
 	}
 
 	if !utils.IsValidEmail(req.Email) {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid email format"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid email format",
+		})
 		return
 	}
 
-	// check if user already exists
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
 
@@ -89,7 +107,6 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	// hash password
 	hashedPassword, err := utils.HashPassword(req.Password)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -98,10 +115,13 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	// create user
 	user := models.User{
-		Email:    req.Email,
-		Password: hashedPassword,
+		Name:        req.Name,
+		Surname:     req.Surname,
+		Email:       req.Email,
+		Password:    hashedPassword,
+		PhoneNumber: req.PhoneNumber,
+		CreatedAt:  time.Now(),
 	}
 
 	_, err = db.UserCollection.InsertOne(ctx, user)
@@ -111,6 +131,8 @@ func Signup(c *gin.Context) {
 		})
 		return
 	}
+
+	fmt.Println("Signup request data:", req)
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Signup successful",

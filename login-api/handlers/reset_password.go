@@ -11,29 +11,26 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 )
-
 func ResetPassword(c *gin.Context) {
-
 	var req struct {
 		Token       string `json:"token"`
 		NewPassword string `json:"new_password"`
 	}
 
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request",
-		})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
 		return
 	}
 
+	req.Token = strings.TrimSpace(req.Token)
+
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
- 
-	//  Find user by reset token
+
 	var user struct {
 		ID               interface{} `bson:"_id"`
+		ResetToken       string      `bson:"reset_token"`
 		ResetTokenExpiry time.Time   `bson:"reset_token_expiry"`
-		Password         string      `bson:"password"`
 	}
 
 	err := db.UserCollection.FindOne(
@@ -43,20 +40,18 @@ func ResetPassword(c *gin.Context) {
 
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid token",
+			"error": "Reset token not found or already used",
 		})
 		return
 	}
 
-   // Check token expiry
-	if time.Now().After(user.ResetTokenExpiry) {
+	if user.ResetTokenExpiry.IsZero() || time.Now().After(user.ResetTokenExpiry) {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Token expired",
+			"error": "Reset token expired",
 		})
 		return
 	}
 
-	//  Hash new password (reuse utils)
 	hashedPassword, err := utils.HashPassword(req.NewPassword)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
@@ -65,17 +60,14 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
-	//  Update password & clear token
 	_, err = db.UserCollection.UpdateByID(
 		ctx,
 		user.ID,
 		bson.M{
-			"$set": bson.M{
-				"password": hashedPassword,
-			},
+			"$set": bson.M{"password": hashedPassword},
 			"$unset": bson.M{
-				"reset_token":        "",
-				"reset_token_expiry": "",
+				"reset_token":         "",
+				"reset_token_expiry":  "",
 			},
 		},
 	)

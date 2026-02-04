@@ -6,11 +6,18 @@ import (
 	middlewares "login-api/middleware"
 
 	"github.com/gin-gonic/gin"
+	"github.com/joho/godotenv"
 )
 
 func main() {
+	// Load environment variables (.env)
+	godotenv.Load()
+
+	// Connect MongoDB
 	db.ConnectMongo()
+
 	r := gin.Default()
+
 	r.POST("/signup", handlers.Signup)
 	r.POST("/login",
 		middlewares.LoginLimiter(),

@@ -1,77 +1,96 @@
 package handlers
 
 import (
-	"context"
 	"net/http"
 	"time"
 
 	"login-api/db"
-	"login-api/utils"
 
 	"github.com/gin-gonic/gin"
-	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
 )
+
 func ResetPassword(c *gin.Context) {
 	var req struct {
-		Token       string `json:"token"`
+		Email       string `json:"email"`
+		OTP         string `json:"otp"`
 		NewPassword string `json:"new_password"`
 	}
 
+	//  Request validation
 	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid request"})
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid request",
+		})
 		return
 	}
 
-	req.Token = strings.TrimSpace(req.Token)
-
-	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
-	defer cancel()
-
-	var user struct {
-		ID               interface{} `bson:"_id"`
-		ResetToken       string      `bson:"reset_token"`
-		ResetTokenExpiry time.Time   `bson:"reset_token_expiry"`
+	//  Password strength check
+	if len(req.NewPassword) < 8 {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Password must be at least 8 characters long",
+		})
+		return
 	}
 
-	err := db.UserCollection.FindOne(
-		ctx,
-		bson.M{"reset_token": req.Token},
-	).Decode(&user)
-
+	//  Get user using DB helper
+	user, err := db.GetUserByEmail(req.Email)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Reset token not found or already used",
+		c.JSON(http.StatusNotFound, gin.H{
+			"error": "User not found",
 		})
 		return
 	}
 
-	if user.ResetTokenExpiry.IsZero() || time.Now().After(user.ResetTokenExpiry) {
+	//  OTP requested check
+	if user.ResetOTPHash == "" || user.OTPExpiresAt.IsZero() {
 		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Reset token expired",
+			"error": "OTP not requested",
 		})
 		return
 	}
 
-	hashedPassword, err := utils.HashPassword(req.NewPassword)
+	//  OTP expiry check
+	if time.Now().After(user.OTPExpiresAt) {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "OTP expired",
+		})
+		return
+	}
+
+	//  OTP hash verification
+	if err := bcrypt.CompareHashAndPassword(
+		[]byte(user.ResetOTPHash),
+		[]byte(req.OTP),
+	); err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "Invalid OTP",
+		})
+		return
+	}
+
+	//  Hash new password
+	hashedPwd, err := bcrypt.GenerateFromPassword(
+		[]byte(req.NewPassword),
+		bcrypt.DefaultCost,
+	)
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could not hash password",
+			"error": "Failed to hash password",
 		})
 		return
 	}
 
-	_, err = db.UserCollection.UpdateByID(
-		ctx,
-		user.ID,
-		bson.M{
-			"$set": bson.M{"password": hashedPassword},
-			"$unset": bson.M{
-				"reset_token":         "",
-				"reset_token_expiry":  "",
+	//  Update password
+	_, err = db.UserCollection.UpdateOne(
+		c,
+		map[string]interface{}{"email": req.Email},
+		map[string]interface{}{
+			"$set": map[string]interface{}{
+				"password": hashedPwd,
 			},
 		},
 	)
-
 	if err != nil {
 		c.JSON(http.StatusInternalServerError, gin.H{
 			"error": "Password update failed",
@@ -79,6 +98,10 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
+	//  Clear OTP data (one-time use)
+	_ = db.ClearOTP(req.Email)
+
+	//  Success response
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Password reset successful",
 	})

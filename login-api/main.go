@@ -1,6 +1,9 @@
 package main
 
 import (
+	"log"
+	"os"
+
 	"login-api/db"
 	"login-api/handlers"
 	middlewares "login-api/middleware"
@@ -10,10 +13,9 @@ import (
 )
 
 func main() {
-	// Load environment variables (.env)
-	godotenv.Load()
-
-	// Connect MongoDB
+	if err := godotenv.Load(); err != nil {
+		log.Println("No .env file found (running in production)")
+	}
 	db.ConnectMongo()
 
 	r := gin.Default()
@@ -27,5 +29,11 @@ func main() {
 	r.POST("/forgot-password", handlers.ForgotPassword)
 	r.POST("/reset-password", handlers.ResetPassword)
 
-	r.Run(":8080")
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	r.Run(":" + port)
 }
+

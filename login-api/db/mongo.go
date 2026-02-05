@@ -15,17 +15,15 @@ var UserCollection *mongo.Collection
 
 func ConnectMongo() {
 
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal("Error loading .env file")
-	}
+	// Load .env ONLY for local development
+	_ = godotenv.Load()
 
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	defer cancel()
 
 	mongoURI := os.Getenv("MONGODB_URI")
 	if mongoURI == "" {
-		log.Fatal("MONGODB_URI not set")
+		log.Fatal("MONGODB_URI is not set")
 	}
 
 	client, err := mongo.Connect(ctx, options.Client().ApplyURI(mongoURI))
@@ -33,6 +31,11 @@ func ConnectMongo() {
 		log.Fatal(err)
 	}
 
+
+	if err := client.Ping(ctx, nil); err != nil {
+		log.Fatal("MongoDB ping failed:", err)
+	}
+
 	UserCollection = client.Database("authdb").Collection("users")
-	log.Println("MongoDB connected ")
+	log.Println("MongoDB connected successfully")
 }

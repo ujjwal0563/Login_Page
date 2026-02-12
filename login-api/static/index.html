@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Authentication System</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      width: 330px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 { text-align: center; }
+
+    input {
+      width: 100%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 8px;
+      background: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+
+    button:hover { background: #0056b3; }
+
+    .link {
+      text-align: center;
+      margin-top: 10px;
+      cursor: pointer;
+      color: blue;
+      font-size: 14px;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 10px;
+      font-size: 14px;
+    }
+
+    .success { color: green; }
+    .error { color: red; }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+<div class="container">
+
+  <h2 id="title">Login</h2>
+
+  <!-- Signup fields -->
+  <input type="text" id="name" placeholder="Name" class="hidden">
+  <input type="text" id="surname" placeholder="Surname" class="hidden">
+  <input type="text" id="phone" placeholder="Phone" class="hidden">
+
+  <!-- Common fields -->
+  <input type="email" id="email" placeholder="Email">
+  <input type="password" id="password" placeholder="Password">
+
+  <!-- Reset fields -->
+  <input type="text" id="otp" placeholder="Enter OTP" class="hidden">
+  <input type="password" id="newPassword" placeholder="New Password" class="hidden">
+
+  <button id="mainBtn">Login</button>
+
+  <div class="link" id="toggleAuth">Don't have an account? Sign Up</div>
+  <div class="link" id="forgotLink">Forgot Password?</div>
+  <div class="link hidden" id="backToLogin">Back to Login</div>
+
+  <div class="message" id="message"></div>
+</div>
+
+<script>
+  const title = document.getElementById("title");
+  const mainBtn = document.getElementById("mainBtn");
+  const toggleAuth = document.getElementById("toggleAuth");
+  const forgotLink = document.getElementById("forgotLink");
+  const backToLogin = document.getElementById("backToLogin");
+  const message = document.getElementById("message");
+
+  const nameField = document.getElementById("name");
+  const surnameField = document.getElementById("surname");
+  const phoneField = document.getElementById("phone");
+  const emailField = document.getElementById("email");
+  const passwordField = document.getElementById("password");
+  const otpField = document.getElementById("otp");
+  const newPasswordField = document.getElementById("newPassword");
+
+  let mode = "login"; // login | signup | forgot | reset
+
+  function resetUI() {
+    nameField.classList.add("hidden");
+    surnameField.classList.add("hidden");
+    phoneField.classList.add("hidden");
+    otpField.classList.add("hidden");
+    newPasswordField.classList.add("hidden");
+    passwordField.classList.remove("hidden");
+    toggleAuth.classList.remove("hidden");
+    forgotLink.classList.remove("hidden");
+    backToLogin.classList.add("hidden");
+    message.innerText = "";
+  }
+
+  toggleAuth.onclick = () => {
+    resetUI();
+    if (mode === "login") {
+      mode = "signup";
+      title.innerText = "Sign Up";
+      mainBtn.innerText = "Sign Up";
+      toggleAuth.innerText = "Already have an account? Login";
+      nameField.classList.remove("hidden");
+      surnameField.classList.remove("hidden");
+      phoneField.classList.remove("hidden");
+    } else {
+      mode = "login";
+      title.innerText = "Login";
+      mainBtn.innerText = "Login";
+      toggleAuth.innerText = "Don't have an account? Sign Up";
+    }
+  };
+
+  forgotLink.onclick = () => {
+    resetUI();
+    mode = "forgot";
+    title.innerText = "Forgot Password";
+    mainBtn.innerText = "Send OTP";
+    toggleAuth.classList.add("hidden");
+    forgotLink.classList.add("hidden");
+    backToLogin.classList.remove("hidden");
+  };
+
+  backToLogin.onclick = () => location.reload();
+
+  mainBtn.onclick = async () => {
+    const email = emailField.value.trim();
+    const password = passwordField.value.trim();
+    const name = nameField.value.trim();
+    const surname = surnameField.value.trim();
+    const phone = phoneField.value.trim();
+    const otp = otpField.value.trim();
+    const newPassword = newPasswordField.value.trim();
+
+    try {
+      let response, data;
+
+      if (mode === "login") {
+        response = await fetch("/login", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ email, password })
+        });
+
+        data = await response.json();
+
+        if (response.ok) {
+          localStorage.setItem("token", data.token);
+          message.className = "message success";
+          message.innerText = data.message;
+        } else {
+          message.className = "message error";
+          message.innerText = data.error;
+
+          if (data.action === "forgot-password") {
+            forgotLink.click();
+          }
+        }
+        return;
+      }
+
+      if (mode === "signup") {
+        response = await fetch("/signup", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            name,
+            surname,
+            email,
+            password,
+            phone_number: phone
+          })
+        });
+
+        data = await response.json();
+        message.className = response.ok ? "message success" : "message error";
+        message.innerText = data.message || data.error;
+        return;
+      }
+
+      if (mode === "forgot") {
+        response = await fetch("/forgot-password", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({ email })
+        });
+
+        data = await response.json();
+        message.className = response.ok ? "message success" : "message error";
+        message.innerText = data.message || data.error;
+
+        if (response.ok) {
+          mode = "reset";
+          title.innerText = "Reset Password";
+          mainBtn.innerText = "Reset Password";
+          otpField.classList.remove("hidden");
+          newPasswordField.classList.remove("hidden");
+          passwordField.classList.add("hidden");
+        }
+        return;
+      }
+
+      if (mode === "reset") {
+        response = await fetch("/reset-password", {
+          method: "POST",
+          headers: {"Content-Type": "application/json"},
+          body: JSON.stringify({
+            email,
+            otp,
+            new_password: newPassword
+          })
+        });
+
+        data = await response.json();
+        message.className = response.ok ? "message success" : "message error";
+        message.innerText = data.message || data.error;
+        return;
+      }
+
+    } catch (err) {
+      message.className = "message error";
+      message.innerText = "Server error";
+    }
+  };
+</script>
+
+</body>
+</html>

@@ -19,7 +19,7 @@ func main() {
 	db.ConnectMongo()
 
 	r := gin.Default()
-
+    r.Static("/", "./static")
 	r.POST("/signup", handlers.Signup)
 	r.POST("/login",
 		middlewares.LoginLimiter(),

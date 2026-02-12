@@ -90,8 +90,9 @@
 
   <div class="message" id="message"></div>
 </div>
-
+ 
 <script>
+  const BASE_URL ="https://login-api-m00t.onrender.com" 
   const title = document.getElementById("title");
   const mainBtn = document.getElementById("mainBtn");
   const toggleAuth = document.getElementById("toggleAuth");
@@ -165,7 +166,7 @@
       let response, data;
 
       if (mode === "login") {
-        response = await fetch("/login", {
+        response = await fetch(`${BASE_URL}/login`, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({ email, password })
@@ -189,7 +190,7 @@
       }
 
       if (mode === "signup") {
-        response = await fetch("/signup", {
+        response = await fetch(`${BASE_URL}/signup`, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({
@@ -208,7 +209,7 @@
       }
 
       if (mode === "forgot") {
-        response = await fetch("/forgot-password", {
+        response = await fetch(`${BASE_URL}/forgot-password`, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({ email })
@@ -230,7 +231,7 @@
       }
 
       if (mode === "reset") {
-        response = await fetch("/reset-password", {
+        response = await fetch(`${BASE_URL}/reset-password`, {
           method: "POST",
           headers: {"Content-Type": "application/json"},
           body: JSON.stringify({

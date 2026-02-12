@@ -10,6 +10,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
+	"github.com/gin-contrib/cors"
 )
 
 func main() {
@@ -19,7 +20,9 @@ func main() {
 	db.ConnectMongo()
 
 	r := gin.Default()
-    r.Static("/", "./static")
+
+    r.Use(cors.Default())
+
 	r.POST("/signup", handlers.Signup)
 	r.POST("/login",
 		middlewares.LoginLimiter(),

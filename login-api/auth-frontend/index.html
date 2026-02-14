@@ -1,256 +1,464 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Authentication System</title>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #f4f4f4;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Real Nest Auth</title>
 
-    .container {
-      background: white;
-      padding: 30px;
-      width: 330px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-    }
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-    h2 { text-align: center; }
+<style>
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
 
-    input {
-      width: 100%;
-      padding: 10px;
-      margin: 8px 0;
-      border-radius: 5px;
-      border: 1px solid #ccc;
-    }
+body{
+  background:#f2f2f2;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
 
-    button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 8px;
-      background: #007bff;
-      color: white;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
+.container{
+  width:1100px;
+  height:650px;
+  background:white;
+  border-radius:30px;
+  display:flex;
+  overflow:hidden;
+  box-shadow:0 20px 50px rgba(0,0,0,0.1);
+}
 
-    button:hover { background: #0056b3; }
+/* LEFT SIDE */
+.left{
+  flex:1;
+  background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') no-repeat center/cover;
+  color:white;
+  padding:30px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  position:relative;
+}
 
-    .link {
-      text-align: center;
-      margin-top: 10px;
-      cursor: pointer;
-      color: blue;
-      font-size: 14px;
-    }
+.left::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:rgba(0,0,0,0.3);
+}
 
-    .message {
-      text-align: center;
-      margin-top: 10px;
-      font-size: 14px;
-    }
+.left-content{
+  position:relative;
+  z-index:2;
+}
 
-    .success { color: green; }
-    .error { color: red; }
+.logo{
+  background:rgba(255,255,255,0.2);
+  padding:8px 20px;
+  border-radius:25px;
+  width:fit-content;
+  font-weight:500;
+}
 
-    .hidden { display: none; }
-  </style>
+.left-text h2{
+  font-size:26px;
+  margin-bottom:10px;
+}
+
+.left-text p{
+  font-size:14px;
+  max-width:380px;
+}
+
+/* RIGHT SIDE */
+.right{
+  flex:1;
+  padding:60px;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+h1{
+  font-size:26px;
+  color:#1d2b6c;
+  margin-bottom:5px;
+}
+
+small{
+  color:gray;
+  margin-bottom:20px;
+  display:block;
+}
+
+.input-group{
+  margin-bottom:15px;
+}
+
+.input-group label{
+  font-size:14px;
+  margin-bottom:6px;
+  display:block;
+}
+
+.input-group input{
+  width:100%;
+  padding:12px 15px;
+  border-radius:25px;
+  border:1px solid #ccc;
+  outline:none;
+  font-size:14px;
+}
+
+.options{
+  display:flex;
+  justify-content:space-between;
+  font-size:13px;
+  margin-bottom:15px;
+}
+
+.options a{
+  color:#4a90e2;
+  cursor:pointer;
+  text-decoration:none;
+}
+
+.main-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:25px;
+  background:linear-gradient(to right,#4a90e2,#357ABD);
+  color:white;
+  font-size:15px;
+  cursor:pointer;
+  margin-top:5px;
+}
+
+.secondary-btn{
+  width:100%;
+  padding:10px;
+  border-radius:25px;
+  border:1px solid #ccc;
+  background:white;
+  cursor:pointer;
+  margin-top:10px;
+}
+
+.toggle-text{
+  text-align:center;
+  margin-top:15px;
+  font-size:14px;
+}
+
+.toggle-text span{
+  color:#4a90e2;
+  cursor:pointer;
+  font-weight:500;
+}
+
+#signupForm,
+#forgotForm{
+  display:none;
+}
+
+@media(max-width:900px){
+  .container{
+    flex-direction:column;
+    height:auto;
+    width:95%;
+  }
+  .left{
+    height:250px;
+  }
+  .right{
+    padding:30px;
+  }
+}
+</style>
 </head>
+
 <body>
 
 <div class="container">
 
-  <h2 id="title">Login</h2>
+  <!-- LEFT -->
+  <div class="left">
+    >
+  </div>
 
-  <!-- Signup fields -->
-  <input type="text" id="name" placeholder="Name" class="hidden">
-  <input type="text" id="surname" placeholder="Surname" class="hidden">
-  <input type="text" id="phone_number" placeholder="Phone" class="hidden">
+  <!-- RIGHT -->
+  <div class="right">
 
-  <!-- Common fields -->
-  <input type="email" id="email" placeholder="Email">
-  <input type="password" id="password" placeholder="Password">
+    <!-- LOGIN -->
+    <form id="loginForm">
+      <h1>Welcome Back!</h1>
+      <small>Sign in your account</small>
 
-  <!-- Reset fields -->
-  <input type="text" id="otp" placeholder="Enter OTP" class="hidden">
-  <input type="password" id="newPassword" placeholder="New Password" class="hidden">
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" required>
+      </div>
 
-  <button id="mainBtn">Login</button>
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" required>
+      </div>
 
-  <div class="link" id="toggleAuth">Don't have an account? Sign Up</div>
-  <div class="link" id="forgotLink">Forgot Password?</div>
-  <div class="link hidden" id="backToLogin">Back to Login</div>
+      <div class="options">
+        <a onclick="showForgot()">Forgot Password?</a>
+      </div>
 
-  <div class="message" id="message"></div>
+      <button type="submit" class="main-btn">Login</button>
+
+      <div class="toggle-text">
+        Don't have an account?
+        <span onclick="showSignup()">Register</span>
+      </div>
+    </form>
+
+    <!-- SIGNUP -->
+    <form id="signupForm">
+      <h1>Create Account</h1>
+      <small>Register new account</small>
+
+      <div class="input-group">
+        <label>Name</label>
+        <input type="text" required>
+      </div>
+
+      <div class="input-group">
+        <label>Surname</label>
+        <input type="text" required>
+      </div>
+
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" required>
+      </div>
+
+      <div class="input-group">
+        <label>Phone Number</label>
+        <input type="tel" required>
+      </div>
+
+      <div class="input-group">
+        <label>Password</label>
+        <input type="password" required>
+      </div>
+
+      <button type="submit" class="main-btn">Sign Up</button>
+
+      <div class="toggle-text">
+        Already have account?
+        <span onclick="showLogin()">Login</span>
+      </div>
+    </form>
+
+    <!-- FORGOT PASSWORD WITH OTP -->
+    <form id="forgotForm">
+      <h1>Forgot Password</h1>
+      <small>Enter email → Verify OTP → Set new password</small>
+
+      <!-- STEP 1 -->
+      <div class="input-group">
+        <label>Email</label>
+        <input type="email" id="forgotEmail" required>
+      </div>
+
+      <button type="button" class="main-btn" onclick="sendOTP()">Send OTP</button>
+
+      <!-- STEP 2 -->
+      <div id="otpSection" style="display:none;">
+        <div class="input-group">
+          <label>Enter OTP</label>
+          <input type="text" id="otpInput" placeholder="6 digit OTP">
+        </div>
+        <button type="button" class="main-btn" onclick="verifyOTP()">Verify OTP</button>
+      </div>
+
+      <!-- STEP 3 -->
+      <div id="newPassSection" style="display:none;">
+        <div class="input-group">
+          <label>New Password</label>
+          <input type="password" id="newPassword">
+        </div>
+        <button type="button" class="main-btn" onclick="resetPassword()">Reset Password</button>
+      </div>
+
+      <button type="button" class="secondary-btn" onclick="showLogin()">Back to Login</button>
+    </form>
+
+  </div>
 </div>
- 
+
 <script>
-  const BASE_URL ="https://login-api-m00t.onrender.com" 
-  const title = document.getElementById("title");
-  const mainBtn = document.getElementById("mainBtn");
-  const toggleAuth = document.getElementById("toggleAuth");
-  const forgotLink = document.getElementById("forgotLink");
-  const backToLogin = document.getElementById("backToLogin");
-  const message = document.getElementById("message");
+const API_BASE_URL = "https://login-api-m00t.onrender.com";
 
-  const nameField = document.getElementById("name");
-  const surnameField = document.getElementById("surname");
-  const phoneField = document.getElementById("phone_number");
-  const emailField = document.getElementById("email");
-  const passwordField = document.getElementById("password");
-  const otpField = document.getElementById("otp");
-  const newPasswordField = document.getElementById("newPassword");
+// Page Switch
+function showSignup(){
+  loginForm.style.display="none";
+  forgotForm.style.display="none";
+  signupForm.style.display="block";
+}
 
-  let mode = "login"; // login | signup | forgot | reset
+function showLogin(){
+  signupForm.style.display="none";
+  forgotForm.style.display="none";
+  loginForm.style.display="block";
+}
 
-  function resetUI() {
-    nameField.classList.add("hidden");
-    surnameField.classList.add("hidden");
-    phoneField.classList.add("hidden");
-    otpField.classList.add("hidden");
-    newPasswordField.classList.add("hidden");
-    passwordField.classList.remove("hidden");
-    toggleAuth.classList.remove("hidden");
-    forgotLink.classList.remove("hidden");
-    backToLogin.classList.add("hidden");
-    message.innerText = "";
+function showForgot(){
+  loginForm.style.display="none";
+  signupForm.style.display="none";
+  forgotForm.style.display="block";
+}
+
+// Helper to show messages
+function showMessage(message, isError = false) {
+  alert(message);
+}
+
+// Login Handler
+loginForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const email = loginForm.querySelector('input[type="email"]').value.trim();
+  const password = loginForm.querySelector('input[type="password"]').value.trim();
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ email, password })
+    });
+
+    const data = await response.json();
+
+    if (response.ok) {
+      localStorage.setItem("token", data.token);
+      showMessage(data.message);
+    } else {
+      showMessage(data.error, true);
+      if (data.action === "forgot-password") {
+        showForgot();
+      }
+    }
+  } catch (err) {
+    showMessage("Server error", true);
+  }
+});
+
+// Signup Handler
+signupForm.addEventListener("submit", async (e) => {
+  e.preventDefault();
+  const inputs = signupForm.querySelectorAll('input');
+  const name = inputs[0].value.trim();
+  const surname = inputs[1].value.trim();
+  const email = inputs[2].value.trim();
+  const phone = inputs[3].value.trim();
+  const password = inputs[4].value.trim();
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/signup`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        name,
+        surname,
+        email,
+        password,
+        phone_number: phone
+      })
+    });
+
+    const data = await response.json();
+    showMessage(data.message || data.error, !response.ok);
+  } catch (err) {
+    showMessage("Server error", true);
+  }
+});
+
+// OTP Logic
+async function sendOTP(){
+  const email = document.getElementById("forgotEmail").value.trim();
+  if(email === ""){
+    showMessage("Enter email first", true);
+    return;
   }
 
-  toggleAuth.onclick = () => {
-    resetUI();
-    if (mode === "login") {
-      mode = "signup";
-      title.innerText = "Sign Up";
-      mainBtn.innerText = "Sign Up";
-      toggleAuth.innerText = "Already have an account? Login";
-      nameField.classList.remove("hidden");
-      surnameField.classList.remove("hidden");
-      phoneField.classList.remove("hidden");
-    } else {
-      mode = "login";
-      title.innerText = "Login";
-      mainBtn.innerText = "Login";
-      toggleAuth.innerText = "Don't have an account? Sign Up";
+  try {
+    const response = await fetch(`${API_BASE_URL}/forgot-password`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({ email })
+    });
+
+    const data = await response.json();
+    showMessage(data.message || data.error, !response.ok);
+
+    if (response.ok) {
+      document.getElementById("otpSection").style.display="block";
     }
-  };
+  } catch (err) {
+    showMessage("Server error", true);
+  }
+}
 
-  forgotLink.onclick = () => {
-    resetUI();
-    mode = "forgot";
-    title.innerText = "Forgot Password";
-    mainBtn.innerText = "Send OTP";
-    toggleAuth.classList.add("hidden");
-    forgotLink.classList.add("hidden");
-    backToLogin.classList.remove("hidden");
-  };
+async function verifyOTP(){
+  const email = document.getElementById("forgotEmail").value.trim();
+  const otp = document.getElementById("otpInput").value.trim();
+  
+  if(otp === ""){
+    showMessage("Enter OTP first", true);
+    return;
+  }
+  
+  // Store OTP for reset
+  document.getElementById("forgotEmail").dataset.otp = otp;
+  showMessage("OTP Verified");
+  document.getElementById("newPassSection").style.display="block";
+}
 
-  backToLogin.onclick = () => location.reload();
+async function resetPassword(){
+  const email = document.getElementById("forgotEmail").value.trim();
+  const otp = document.getElementById("otpInput").value.trim();
+  const newPassword = document.getElementById("newPassword").value.trim();
+  
+  if(newPassword.length < 6){
+    showMessage("Password must be 6+ characters", true);
+    return;
+  }
 
-  mainBtn.onclick = async () => {
-    const email = emailField.value.trim();
-    const password = passwordField.value.trim();
-    const name = nameField.value.trim();
-    const surname = surnameField.value.trim();
-    const phone = phoneField.value.trim();
-    const otp = otpField.value.trim();
-    const newPassword = newPasswordField.value.trim();
+  try {
+    const response = await fetch(`${API_BASE_URL}/reset-password`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({
+        email,
+        otp,
+        new_password: newPassword
+      })
+    });
 
-    try {
-      let response, data;
+    const data = await response.json();
+    showMessage(data.message || data.error, !response.ok);
 
-      if (mode === "login") {
-        response = await fetch(`${BASE_URL}/login`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ email, password })
-        });
-
-        data = await response.json();
-
-        if (response.ok) {
-          message.className = "message success";
-          message.innerText = data.message;
-        } else {
-          message.className = "message error";
-          message.innerText = data.error;
-
-          if (data.action === "forgot-password") {
-            forgotLink.click();
-          }
-        }
-        return;
-      }
-
-      if (mode === "signup") {
-        response = await fetch(`${BASE_URL}/signup`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({
-            name,
-            surname,
-            email,
-            password,
-            phone_number: phone
-          })
-        });
-
-        data = await response.json();
-        message.className = response.ok ? "message success" : "message error";
-        message.innerText = data.message || data.error;
-        return;
-      }
-
-      if (mode === "forgot") {
-        response = await fetch(`${BASE_URL}/forgot-password`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({ email })
-        });
-
-        data = await response.json();
-        message.className = response.ok ? "message success" : "message error";
-        message.innerText = data.message || data.error;
-
-        if (response.ok) {
-          mode = "reset";
-          title.innerText = "Reset Password";
-          mainBtn.innerText = "Reset Password";
-          otpField.classList.remove("hidden");
-          newPasswordField.classList.remove("hidden");
-          passwordField.classList.add("hidden");
-        }
-        return;
-      }
-
-      if (mode === "reset") {
-        response = await fetch(`${BASE_URL}/reset-password`, {
-          method: "POST",
-          headers: {"Content-Type": "application/json"},
-          body: JSON.stringify({
-            email,
-            otp,
-            new_password: newPassword
-          })
-        });
-
-        data = await response.json();
-        message.className = response.ok ? "message success" : "message error";
-        message.innerText = data.message || data.error;
-        return;
-      }
-
-    } catch (err) {
-      message.className = "message error";
-      message.innerText = "Server error";
+    if (response.ok) {
+      showLogin();
+      // Reset form
+      document.getElementById("otpSection").style.display="none";
+      document.getElementById("newPassSection").style.display="none";
+      forgotForm.reset();
     }
-  };
+  } catch (err) {
+    showMessage("Server error", true);
+  }
+}
 </script>
 
 </body>

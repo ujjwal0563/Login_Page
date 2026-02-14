@@ -72,7 +72,7 @@
   <!-- Signup fields -->
   <input type="text" id="name" placeholder="Name" class="hidden">
   <input type="text" id="surname" placeholder="Surname" class="hidden">
-  <input type="text" id="phone" placeholder="Phone" class="hidden">
+  <input type="text" id="phone_number" placeholder="Phone" class="hidden">
 
   <!-- Common fields -->
   <input type="email" id="email" placeholder="Email">
@@ -102,7 +102,7 @@
 
   const nameField = document.getElementById("name");
   const surnameField = document.getElementById("surname");
-  const phoneField = document.getElementById("phone");
+  const phoneField = document.getElementById("phone_number");
   const emailField = document.getElementById("email");
   const passwordField = document.getElementById("password");
   const otpField = document.getElementById("otp");
@@ -175,7 +175,6 @@
         data = await response.json();
 
         if (response.ok) {
-          localStorage.setItem("token", data.token);
           message.className = "message success";
           message.innerText = data.message;
         } else {

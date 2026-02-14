@@ -63,7 +63,7 @@ func Login(c *gin.Context) {
 	if !utils.CheckPassword(user.Password, req.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error":  "Wrong password",
-			"action": "forgot-password", 
+			"action": "forgot-password",
 		})
 		return
 	}
@@ -115,19 +115,26 @@ func Signup(c *gin.Context) {
 		return
 	}
 
+	// Handle empty phone number to avoid unique index conflicts
+	phoneNumber := req.PhoneNumber
+	if phoneNumber == "" {
+		phoneNumber = ""
+	}
+
 	user := models.User{
 		Name:        req.Name,
 		Surname:     req.Surname,
 		Email:       req.Email,
 		Password:    hashedPassword,
-		PhoneNumber: req.PhoneNumber,
-		CreatedAt:  time.Now(),
+		PhoneNumber: phoneNumber,
+		CreatedAt:   time.Now(),
 	}
 
 	_, err = db.UserCollection.InsertOne(ctx, user)
 	if err != nil {
+		fmt.Printf("InsertOne error: %v\n", err)
 		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "User creation failed",
+			"error": fmt.Sprintf("User creation failed: %v", err),
 		})
 		return
 	}
@@ -138,4 +145,3 @@ func Signup(c *gin.Context) {
 		"message": "Signup successful",
 	})
 }
-

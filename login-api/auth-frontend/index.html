@@ -17,68 +17,39 @@
 
 body{
   background:#f2f2f2;
+}
+
+/* CENTER WRAPPER */
+.wrapper{
+  min-height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  height:100vh;
+  padding:30px 15px;
 }
 
+/* MAIN CARD */
 .container{
-  width:1100px;
-  height:650px;
+  width:100%;
+  max-width:1100px;
   background:white;
-  border-radius:30px;
+  border-radius:25px;
   display:flex;
   overflow:hidden;
-  box-shadow:0 20px 50px rgba(0,0,0,0.1);
+  box-shadow:0 15px 40px rgba(0,0,0,0.08);
 }
 
-/* LEFT SIDE */
+/* LEFT IMAGE */
 .left{
   flex:1;
-  background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') no-repeat center/cover;
-  color:white;
-  padding:30px;
-  display:flex;
-  flex-direction:column;
-  justify-content:space-between;
-  position:relative;
+  min-height:520px;
+  background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') center/cover no-repeat;
 }
 
-.left::after{
-  content:"";
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.3);
-}
-
-.left-content{
-  position:relative;
-  z-index:2;
-}
-
-.logo{
-  background:rgba(255,255,255,0.2);
-  padding:8px 20px;
-  border-radius:25px;
-  width:fit-content;
-  font-weight:500;
-}
-
-.left-text h2{
-  font-size:26px;
-  margin-bottom:10px;
-}
-
-.left-text p{
-  font-size:14px;
-  max-width:380px;
-}
-
-/* RIGHT SIDE */
+/* RIGHT FORM */
 .right{
   flex:1;
-  padding:60px;
+  padding:60px 50px;
   display:flex;
   flex-direction:column;
   justify-content:center;
@@ -92,12 +63,12 @@ h1{
 
 small{
   color:gray;
-  margin-bottom:20px;
+  margin-bottom:25px;
   display:block;
 }
 
 .input-group{
-  margin-bottom:15px;
+  margin-bottom:18px;
 }
 
 .input-group label{
@@ -108,58 +79,68 @@ small{
 
 .input-group input{
   width:100%;
-  padding:12px 15px;
-  border-radius:25px;
-  border:1px solid #ccc;
-  outline:none;
+  padding:13px 16px;
+  border-radius:30px;
+  border:1px solid #ddd;
   font-size:14px;
+  outline:none;
+  transition:0.2s;
+}
+
+.input-group input:focus{
+  border-color:#4a90e2;
+  box-shadow:0 0 6px rgba(74,144,226,0.3);
 }
 
 .options{
-  display:flex;
-  justify-content:space-between;
+  text-align:right;
+  margin-bottom:20px;
   font-size:13px;
-  margin-bottom:15px;
 }
 
 .options a{
   color:#4a90e2;
-  cursor:pointer;
   text-decoration:none;
+  cursor:pointer;
 }
 
 .main-btn{
   width:100%;
-  padding:12px;
+  padding:13px;
   border:none;
-  border-radius:25px;
+  border-radius:30px;
   background:linear-gradient(to right,#4a90e2,#357ABD);
   color:white;
   font-size:15px;
   cursor:pointer;
-  margin-top:5px;
+  transition:0.2s;
+}
+
+.main-btn:hover{
+  transform:translateY(-1px);
+  opacity:0.95;
 }
 
 .secondary-btn{
   width:100%;
-  padding:10px;
-  border-radius:25px;
-  border:1px solid #ccc;
+  padding:11px;
+  border-radius:30px;
+  border:1px solid #ddd;
   background:white;
-  cursor:pointer;
   margin-top:10px;
+  cursor:pointer;
 }
 
 .toggle-text{
   text-align:center;
-  margin-top:15px;
+  margin-top:18px;
   font-size:14px;
 }
 
 .toggle-text span{
   color:#4a90e2;
-  cursor:pointer;
   font-weight:500;
+  cursor:pointer;
 }
 
 #signupForm,
@@ -167,17 +148,24 @@ small{
   display:none;
 }
 
+/* MOBILE RESPONSIVE */
 @media(max-width:900px){
+
   .container{
     flex-direction:column;
-    height:auto;
-    width:95%;
+    border-radius:20px;
   }
+
   .left{
-    height:250px;
+    min-height:220px;
   }
+
   .right{
-    padding:30px;
+    padding:30px 25px;
+  }
+
+  h1{
+    font-size:22px;
   }
 }
 </style>
@@ -185,14 +173,11 @@ small{
 
 <body>
 
+<div class="wrapper">
 <div class="container">
 
-  <!-- LEFT -->
-  <div class="left">
-    >
-  </div>
+  <div class="left"></div>
 
-  <!-- RIGHT -->
   <div class="right">
 
     <!-- LOGIN -->
@@ -260,12 +245,11 @@ small{
       </div>
     </form>
 
-    <!-- FORGOT PASSWORD WITH OTP -->
+    <!-- FORGOT -->
     <form id="forgotForm">
       <h1>Forgot Password</h1>
       <small>Enter email → Verify OTP → Set new password</small>
 
-      <!-- STEP 1 -->
       <div class="input-group">
         <label>Email</label>
         <input type="email" id="forgotEmail" required>
@@ -273,16 +257,14 @@ small{
 
       <button type="button" class="main-btn" onclick="sendOTP()">Send OTP</button>
 
-      <!-- STEP 2 -->
       <div id="otpSection" style="display:none;">
         <div class="input-group">
           <label>Enter OTP</label>
-          <input type="text" id="otpInput" placeholder="6 digit OTP">
+          <input type="text" id="otpInput">
         </div>
         <button type="button" class="main-btn" onclick="verifyOTP()">Verify OTP</button>
       </div>
 
-      <!-- STEP 3 -->
       <div id="newPassSection" style="display:none;">
         <div class="input-group">
           <label>New Password</label>
@@ -295,12 +277,17 @@ small{
     </form>
 
   </div>
+
+</div>
 </div>
 
 <script>
 const API_BASE_URL = "https://login-api-m00t.onrender.com";
 
-// Page Switch
+const loginForm = document.getElementById("loginForm");
+const signupForm = document.getElementById("signupForm");
+const forgotForm = document.getElementById("forgotForm");
+
 function showSignup(){
   loginForm.style.display="none";
   forgotForm.style.display="none";
@@ -319,144 +306,78 @@ function showForgot(){
   forgotForm.style.display="block";
 }
 
-// Helper to show messages
-function showMessage(message, isError = false) {
-  alert(message);
+function showMessage(msg){
+  alert(msg);
 }
 
-// Login Handler
-loginForm.addEventListener("submit", async (e) => {
+loginForm.addEventListener("submit", async (e)=>{
   e.preventDefault();
-  const email = loginForm.querySelector('input[type="email"]').value.trim();
-  const password = loginForm.querySelector('input[type="password"]').value.trim();
+  const email = loginForm.querySelector('input[type="email"]').value;
+  const password = loginForm.querySelector('input[type="password"]').value;
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/login`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ email, password })
-    });
+  const res = await fetch(`${API_BASE_URL}/login`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email,password})
+  });
 
-    const data = await response.json();
-
-    if (response.ok) {
-      localStorage.setItem("token", data.token);
-      showMessage(data.message);
-    } else {
-      showMessage(data.error, true);
-      if (data.action === "forgot-password") {
-        showForgot();
-      }
-    }
-  } catch (err) {
-    showMessage("Server error", true);
-  }
+  const data = await res.json();
+  showMessage(data.message || data.error);
 });
 
-// Signup Handler
-signupForm.addEventListener("submit", async (e) => {
+signupForm.addEventListener("submit", async (e)=>{
   e.preventDefault();
-  const inputs = signupForm.querySelectorAll('input');
-  const name = inputs[0].value.trim();
-  const surname = inputs[1].value.trim();
-  const email = inputs[2].value.trim();
-  const phone = inputs[3].value.trim();
-  const password = inputs[4].value.trim();
+  const inputs = signupForm.querySelectorAll("input");
 
-  try {
-    const response = await fetch(`${API_BASE_URL}/signup`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        name,
-        surname,
-        email,
-        password,
-        phone_number: phone
-      })
-    });
+  const res = await fetch(`${API_BASE_URL}/signup`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      name:inputs[0].value,
+      surname:inputs[1].value,
+      email:inputs[2].value,
+      phone_number:inputs[3].value,
+      password:inputs[4].value
+    })
+  });
 
-    const data = await response.json();
-    showMessage(data.message || data.error, !response.ok);
-  } catch (err) {
-    showMessage("Server error", true);
-  }
+  const data = await res.json();
+  showMessage(data.message || data.error);
 });
 
-// OTP Logic
 async function sendOTP(){
-  const email = document.getElementById("forgotEmail").value.trim();
-  if(email === ""){
-    showMessage("Enter email first", true);
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/forgot-password`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({ email })
-    });
-
-    const data = await response.json();
-    showMessage(data.message || data.error, !response.ok);
-
-    if (response.ok) {
-      document.getElementById("otpSection").style.display="block";
-    }
-  } catch (err) {
-    showMessage("Server error", true);
-  }
+  const res = await fetch(`${API_BASE_URL}/forgot-password`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({email:forgotEmail.value})
+  });
+  const data = await res.json();
+  showMessage(data.message || data.error);
+  if(res.ok) otpSection.style.display="block";
 }
 
-async function verifyOTP(){
-  const email = document.getElementById("forgotEmail").value.trim();
-  const otp = document.getElementById("otpInput").value.trim();
-  
-  if(otp === ""){
-    showMessage("Enter OTP first", true);
-    return;
-  }
-  
-  // Store OTP for reset
-  document.getElementById("forgotEmail").dataset.otp = otp;
+function verifyOTP(){
+  newPassSection.style.display="block";
   showMessage("OTP Verified");
-  document.getElementById("newPassSection").style.display="block";
 }
 
 async function resetPassword(){
-  const email = document.getElementById("forgotEmail").value.trim();
-  const otp = document.getElementById("otpInput").value.trim();
-  const newPassword = document.getElementById("newPassword").value.trim();
-  
-  if(newPassword.length < 6){
-    showMessage("Password must be 6+ characters", true);
-    return;
-  }
-
-  try {
-    const response = await fetch(`${API_BASE_URL}/reset-password`, {
-      method: "POST",
-      headers: {"Content-Type": "application/json"},
-      body: JSON.stringify({
-        email,
-        otp,
-        new_password: newPassword
-      })
-    });
-
-    const data = await response.json();
-    showMessage(data.message || data.error, !response.ok);
-
-    if (response.ok) {
-      showLogin();
-      // Reset form
-      document.getElementById("otpSection").style.display="none";
-      document.getElementById("newPassSection").style.display="none";
-      forgotForm.reset();
-    }
-  } catch (err) {
-    showMessage("Server error", true);
+  const res = await fetch(`${API_BASE_URL}/reset-password`,{
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      email:forgotEmail.value,
+      otp:otpInput.value,
+      new_password:newPassword.value
+    })
+  });
+  const data = await res.json();
+  showMessage(data.message || data.error);
+  if(res.ok){
+    showLogin();
+    forgotForm.reset();
+    otpSection.style.display="none";
+    newPassSection.style.display="none";
   }
 }
 </script>

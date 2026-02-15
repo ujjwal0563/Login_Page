@@ -19,7 +19,6 @@ body{
   background:#f2f2f2;
 }
 
-/* CENTER WRAPPER */
 .wrapper{
   min-height:100vh;
   display:flex;
@@ -28,7 +27,6 @@ body{
   padding:30px 15px;
 }
 
-/* MAIN CARD */
 .container{
   width:100%;
   max-width:1100px;
@@ -39,14 +37,12 @@ body{
   box-shadow:0 15px 40px rgba(0,0,0,0.08);
 }
 
-/* LEFT IMAGE */
 .left{
   flex:1;
   min-height:520px;
   background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') center/cover no-repeat;
 }
 
-/* RIGHT FORM */
 .right{
   flex:1;
   padding:60px 50px;
@@ -131,6 +127,27 @@ small{
   cursor:pointer;
 }
 
+/* MESSAGE BOX */
+.message-box{
+  padding:12px 15px;
+  border-radius:10px;
+  font-size:14px;
+  margin-bottom:15px;
+  display:none;
+}
+
+.message-success{
+  background:#e6f9ed;
+  color:#1a7f37;
+  border:1px solid #b7ebc6;
+}
+
+.message-error{
+  background:#fdecea;
+  color:#b42318;
+  border:1px solid #f5c2c0;
+}
+
 .toggle-text{
   text-align:center;
   margin-top:18px;
@@ -148,9 +165,7 @@ small{
   display:none;
 }
 
-/* MOBILE RESPONSIVE */
 @media(max-width:900px){
-
   .container{
     flex-direction:column;
     border-radius:20px;
@@ -179,6 +194,9 @@ small{
   <div class="left"></div>
 
   <div class="right">
+
+    <!-- MESSAGE BOX -->
+    <div id="messageBox" class="message-box"></div>
 
     <!-- LOGIN -->
     <form id="loginForm">
@@ -287,6 +305,23 @@ const API_BASE_URL = "https://login-api-m00t.onrender.com";
 const loginForm = document.getElementById("loginForm");
 const signupForm = document.getElementById("signupForm");
 const forgotForm = document.getElementById("forgotForm");
+const messageBox = document.getElementById("messageBox");
+
+function showMessage(message, isError = false){
+  messageBox.style.display = "block";
+  messageBox.textContent = message;
+  messageBox.classList.remove("message-success","message-error");
+
+  if(isError){
+    messageBox.classList.add("message-error");
+  } else {
+    messageBox.classList.add("message-success");
+  }
+
+  setTimeout(()=>{
+    messageBox.style.display="none";
+  },3000);
+}
 
 function showSignup(){
   loginForm.style.display="none";
@@ -306,10 +341,6 @@ function showForgot(){
   forgotForm.style.display="block";
 }
 
-function showMessage(msg){
-  alert(msg);
-}
-
 loginForm.addEventListener("submit", async (e)=>{
   e.preventDefault();
   const email = loginForm.querySelector('input[type="email"]').value;
@@ -322,7 +353,7 @@ loginForm.addEventListener("submit", async (e)=>{
   });
 
   const data = await res.json();
-  showMessage(data.message || data.error);
+  showMessage(data.message || data.error, !res.ok);
 });
 
 signupForm.addEventListener("submit", async (e)=>{
@@ -342,7 +373,7 @@ signupForm.addEventListener("submit", async (e)=>{
   });
 
   const data = await res.json();
-  showMessage(data.message || data.error);
+  showMessage(data.message || data.error, !res.ok);
 });
 
 async function sendOTP(){
@@ -352,7 +383,7 @@ async function sendOTP(){
     body:JSON.stringify({email:forgotEmail.value})
   });
   const data = await res.json();
-  showMessage(data.message || data.error);
+  showMessage(data.message || data.error, !res.ok);
   if(res.ok) otpSection.style.display="block";
 }
 
@@ -372,7 +403,7 @@ async function resetPassword(){
     })
   });
   const data = await res.json();
-  showMessage(data.message || data.error);
+  showMessage(data.message || data.error, !res.ok);
   if(res.ok){
     showLogin();
     forgotForm.reset();

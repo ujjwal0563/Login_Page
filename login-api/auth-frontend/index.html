@@ -15,8 +15,24 @@
   font-family:'Poppins',sans-serif;
 }
 
-body{
-  background:#f2f2f2;
+video{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:-2;
+}
+
+.overlay{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.6);
+  z-index:-1;
 }
 
 .wrapper{
@@ -24,392 +40,315 @@ body{
   display:flex;
   justify-content:center;
   align-items:center;
-  padding:30px 15px;
+  padding:20px;
 }
 
-.container{
+.card{
   width:100%;
-  max-width:1100px;
-  background:white;
-  border-radius:25px;
-  display:flex;
-  overflow:hidden;
-  box-shadow:0 15px 40px rgba(0,0,0,0.08);
-}
-
-.left{
-  flex:1;
-  min-height:520px;
-  background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c') center/cover no-repeat;
-}
-
-.right{
-  flex:1;
-  padding:60px 50px;
-  display:flex;
-  flex-direction:column;
-  justify-content:center;
-}
-
-h1{
-  font-size:26px;
-  color:#1d2b6c;
-  margin-bottom:5px;
-}
-
-small{
-  color:gray;
-  margin-bottom:25px;
-  display:block;
-}
-
-.input-group{
-  margin-bottom:18px;
-}
-
-.input-group label{
-  font-size:14px;
-  margin-bottom:6px;
-  display:block;
-}
-
-.input-group input{
-  width:100%;
-  padding:13px 16px;
-  border-radius:30px;
-  border:1px solid #ddd;
-  font-size:14px;
-  outline:none;
-  transition:0.2s;
-}
-
-.input-group input:focus{
-  border-color:#4a90e2;
-  box-shadow:0 0 6px rgba(74,144,226,0.3);
-}
-
-.options{
-  text-align:right;
-  margin-bottom:20px;
-  font-size:13px;
-}
-
-.options a{
-  color:#4a90e2;
-  text-decoration:none;
-  cursor:pointer;
-}
-
-.main-btn{
-  width:100%;
-  padding:13px;
-  border:none;
-  border-radius:30px;
-  background:linear-gradient(to right,#4a90e2,#357ABD);
+  max-width:450px;
+  background:rgba(255,255,255,0.12);
+  backdrop-filter:blur(15px);
+  border-radius:20px;
+  padding:35px 30px;
+  box-shadow:0 15px 40px rgba(0,0,0,0.4);
   color:white;
-  font-size:15px;
-  cursor:pointer;
-  transition:0.2s;
 }
 
-.main-btn:hover{
-  transform:translateY(-1px);
-  opacity:0.95;
-}
-
-.secondary-btn{
-  width:100%;
-  padding:11px;
-  border-radius:30px;
-  border:1px solid #ddd;
-  background:white;
-  margin-top:10px;
-  cursor:pointer;
-}
-
-/* MESSAGE BOX */
 .message-box{
-  padding:12px 15px;
+  padding:10px 15px;
   border-radius:10px;
   font-size:14px;
   margin-bottom:15px;
   display:none;
+  background:rgba(255,255,255,0.15);
+  border:1px solid rgba(255,255,255,0.3);
+  color:white;
 }
 
-.message-success{
-  background:#e6f9ed;
-  color:#1a7f37;
-  border:1px solid #b7ebc6;
+.input-group{
+  margin-bottom:15px;
 }
 
-.message-error{
-  background:#fdecea;
-  color:#b42318;
-  border:1px solid #f5c2c0;
+.input-group label{
+  font-size:13px;
+  display:block;
+  margin-bottom:5px;
+}
+
+.input-group input{
+  width:100%;
+  padding:12px 15px;
+  border-radius:25px;
+  border:none;
+  outline:none;
+  font-size:14px;
+}
+
+.main-btn{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:25px;
+  background:white;
+  color:#333;
+  cursor:pointer;
+  margin-top:5px;
+  transition:0.2s;
+}
+
+.main-btn:hover{
+  transform:translateY(-2px);
+}
+
+.secondary-btn{
+  width:100%;
+  padding:10px;
+  border-radius:25px;
+  border:1px solid white;
+  background:transparent;
+  color:white;
+  margin-top:10px;
+  cursor:pointer;
 }
 
 .toggle-text{
   text-align:center;
-  margin-top:18px;
+  margin-top:15px;
   font-size:14px;
 }
 
 .toggle-text span{
-  color:#4a90e2;
-  font-weight:500;
+  color:#8cc8ff;
   cursor:pointer;
+  font-weight:500;
 }
 
 #signupForm,
 #forgotForm{
   display:none;
 }
-
-@media(max-width:900px){
-  .container{
-    flex-direction:column;
-    border-radius:20px;
-  }
-
-  .left{
-    min-height:220px;
-  }
-
-  .right{
-    padding:30px 25px;
-  }
-
-  h1{
-    font-size:22px;
-  }
-}
 </style>
 </head>
 
 <body>
 
+<video autoplay muted loop playsinline>
+  <source src="https://media.istockphoto.com/id/1315388795/video/flying-through-emerging-digital-structures-blue-loopable-data-network-virtual-reality-quantum.mp4?s=mp4-640x640-is&k=20&c=YOcxqKZzmSRYHCTkzQgtAKAKGC6E1L5QWNB7ecOspnk=" type="video/mp4">
+</video>
+
+<div class="overlay"></div>
+
 <div class="wrapper">
-<div class="container">
+<div class="card">
 
-  <div class="left"></div>
+<div id="messageBox" class="message-box"></div>
 
-  <div class="right">
+<!-- LOGIN -->
+<form id="loginForm">
+<h1>Login</h1>
 
-    <!-- MESSAGE BOX -->
-    <div id="messageBox" class="message-box"></div>
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="loginEmail" required>
+</div>
 
-    <!-- LOGIN -->
-    <form id="loginForm">
-      <h1>Welcome Back!</h1>
-      <small>Sign in your account</small>
+<div class="input-group">
+<label>Password</label>
+<input type="password" id="loginPassword" required>
+</div>
 
-      <div class="input-group">
-        <label>Email</label>
-        <input type="email" required>
-      </div>
+<button type="submit" class="main-btn">Login</button>
 
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" required>
-      </div>
+<div class="toggle-text">
+Don't have account?
+<span onclick="showSignup()">Register</span>
+</div>
 
-      <div class="options">
-        <a onclick="showForgot()">Forgot Password?</a>
-      </div>
+<div class="toggle-text">
+<span onclick="showForgot()">Forgot Password?</span>
+</div>
+</form>
 
-      <button type="submit" class="main-btn">Login</button>
+<!-- SIGNUP -->
+<form id="signupForm">
+<h1>Register</h1>
 
-      <div class="toggle-text">
-        Don't have an account?
-        <span onclick="showSignup()">Register</span>
-      </div>
-    </form>
+<div class="input-group">
+<label>Name</label>
+<input type="text" id="signupName" required>
+</div>
 
-    <!-- SIGNUP -->
-    <form id="signupForm">
-      <h1>Create Account</h1>
-      <small>Register new account</small>
+<div class="input-group">
+  <label>Username</label>
+  <input type="text" id="signupUsername" required>  
+</div>
+ 
+<div class="input-group">
+<label>Phone</label>
+<input type="text" id="signupPhone" required>
+</div>
 
-      <div class="input-group">
-        <label>Name</label>
-        <input type="text" required>
-      </div>
 
-      <div class="input-group">
-        <label>Surname</label>
-        <input type="text" required>
-      </div>
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="signupEmail" required>
+</div>
 
-      <div class="input-group">
-        <label>Email</label>
-        <input type="email" required>
-      </div>
+<div class="input-group">
+<label>Password</label>
+<input type="password" id="signupPassword" required>
+</div>
 
-      <div class="input-group">
-        <label>Phone Number</label>
-        <input type="tel" required>
-      </div>
+<button type="submit" class="main-btn">Register</button>
 
-      <div class="input-group">
-        <label>Password</label>
-        <input type="password" required>
-      </div>
+<div class="toggle-text">
+Already have account?
+<span onclick="showLogin()">Login</span>
+</div>
+</form>
 
-      <button type="submit" class="main-btn">Sign Up</button>
+<!-- FORGOT PASSWORD -->
+<form id="forgotForm">
+<h1>Reset Password</h1>
 
-      <div class="toggle-text">
-        Already have account?
-        <span onclick="showLogin()">Login</span>
-      </div>
-    </form>
+<div class="input-group">
+<label>Email</label>
+<input type="email" id="forgotEmail" required>
+</div>
 
-    <!-- FORGOT -->
-    <form id="forgotForm">
-      <h1>Forgot Password</h1>
-      <small>Enter email → Verify OTP → Set new password</small>
+<button type="button" class="main-btn" onclick="sendOTP()">Send OTP</button>
 
-      <div class="input-group">
-        <label>Email</label>
-        <input type="email" id="forgotEmail" required>
-      </div>
+<div id="otpSection" style="display:none;">
+<div class="input-group">
+<label>Enter OTP</label>
+<input type="text" id="otpInput">
+</div>
+</div>
 
-      <button type="button" class="main-btn" onclick="sendOTP()">Send OTP</button>
+<div id="newPassSection" style="display:none;">
+<div class="input-group">
+<label>New Password</label>
+<input type="password" id="newPassword">
+</div>
+<button type="button" class="main-btn" onclick="resetPassword()">Update Password</button>
+</div>
 
-      <div id="otpSection" style="display:none;">
-        <div class="input-group">
-          <label>Enter OTP</label>
-          <input type="text" id="otpInput">
-        </div>
-        <button type="button" class="main-btn" onclick="verifyOTP()">Verify OTP</button>
-      </div>
-
-      <div id="newPassSection" style="display:none;">
-        <div class="input-group">
-          <label>New Password</label>
-          <input type="password" id="newPassword">
-        </div>
-        <button type="button" class="main-btn" onclick="resetPassword()">Reset Password</button>
-      </div>
-
-      <button type="button" class="secondary-btn" onclick="showLogin()">Back to Login</button>
-    </form>
-
-  </div>
+<button type="button" class="secondary-btn" onclick="showLogin()">Back</button>
+</form>
 
 </div>
 </div>
 
 <script>
-const API_BASE_URL = "https://login-api-m00t.onrender.com";
+const API_BASE_URL="https://login-api-m00t.onrender.com";
 
-const loginForm = document.getElementById("loginForm");
-const signupForm = document.getElementById("signupForm");
-const forgotForm = document.getElementById("forgotForm");
-const messageBox = document.getElementById("messageBox");
+const loginForm=document.getElementById("loginForm");
+const signupForm=document.getElementById("signupForm");
+const forgotForm=document.getElementById("forgotForm");
+const messageBox=document.getElementById("messageBox");
 
-function showMessage(message, isError = false){
-  messageBox.style.display = "block";
-  messageBox.textContent = message;
-  messageBox.classList.remove("message-success","message-error");
-
-  if(isError){
-    messageBox.classList.add("message-error");
-  } else {
-    messageBox.classList.add("message-success");
-  }
-
-  setTimeout(()=>{
-    messageBox.style.display="none";
-  },3000);
+function showMessage(msg,isError=false){
+messageBox.style.display="block";
+messageBox.textContent=msg;
+messageBox.style.color=isError?"#ffb3b3":"#b6ffb3";
+setTimeout(()=>{messageBox.style.display="none"},4000);
 }
 
 function showSignup(){
-  loginForm.style.display="none";
-  forgotForm.style.display="none";
-  signupForm.style.display="block";
+loginForm.style.display="none";
+forgotForm.style.display="none";
+signupForm.style.display="block";
 }
 
 function showLogin(){
-  signupForm.style.display="none";
-  forgotForm.style.display="none";
-  loginForm.style.display="block";
+signupForm.style.display="none";
+forgotForm.style.display="none";
+loginForm.style.display="block";
 }
 
 function showForgot(){
-  loginForm.style.display="none";
-  signupForm.style.display="none";
-  forgotForm.style.display="block";
+loginForm.style.display="none";
+signupForm.style.display="none";
+forgotForm.style.display="block";
 }
 
-loginForm.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  const email = loginForm.querySelector('input[type="email"]').value;
-  const password = loginForm.querySelector('input[type="password"]').value;
-
-  const res = await fetch(`${API_BASE_URL}/login`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({email,password})
-  });
-
-  const data = await res.json();
-  showMessage(data.message || data.error, !res.ok);
+/* LOGIN */
+loginForm.addEventListener("submit",async e=>{
+e.preventDefault();
+try{
+const res=await fetch(`${API_BASE_URL}/login`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email:loginEmail.value,
+password:loginPassword.value
+})
+});
+const data=await res.json().catch(()=>({}));
+if(!res.ok) return showMessage(data.message||"Login failed",true);
+showMessage("Login successful");
+loginForm.reset();
+}catch(err){showMessage("Server error",true);}
 });
 
-signupForm.addEventListener("submit", async (e)=>{
-  e.preventDefault();
-  const inputs = signupForm.querySelectorAll("input");
-
-  const res = await fetch(`${API_BASE_URL}/signup`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      name:inputs[0].value,
-      surname:inputs[1].value,
-      email:inputs[2].value,
-      phone_number:inputs[3].value,
-      password:inputs[4].value
-    })
-  });
-
-  const data = await res.json();
-  showMessage(data.message || data.error, !res.ok);
+/* SIGNUP */
+signupForm.addEventListener("submit",async e=>{
+e.preventDefault();
+try{
+const res=await fetch(`${API_BASE_URL}/register`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+name:signupName.value,
+username:signupUsername.value,
+phone:signupPhone.value,
+email:signupEmail.value,
+password:signupPassword.value
+})
+});
+const data=await res.json().catch(()=>({}));
+if(!res.ok) return showMessage(data.message||"Signup failed",true);
+showMessage("Account created successfully");
+signupForm.reset();
+showLogin();
+}catch(err){showMessage("Server error",true);}
 });
 
+/* OTP FLOW */
 async function sendOTP(){
-  const res = await fetch(`${API_BASE_URL}/forgot-password`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({email:forgotEmail.value})
-  });
-  const data = await res.json();
-  showMessage(data.message || data.error, !res.ok);
-  if(res.ok) otpSection.style.display="block";
-}
-
-function verifyOTP(){
-  newPassSection.style.display="block";
-  showMessage("OTP Verified");
+try{
+const res=await fetch(`${API_BASE_URL}/forgot-password`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({email:forgotEmail.value})
+});
+const data=await res.json().catch(()=>({}));
+if(!res.ok) return showMessage(data.message||"OTP send failed",true);
+otpSection.style.display="block";
+newPassSection.style.display="block";
+showMessage("OTP sent");
+}catch(err){showMessage("Server error",true);}
 }
 
 async function resetPassword(){
-  const res = await fetch(`${API_BASE_URL}/reset-password`,{
-    method:"POST",
-    headers:{"Content-Type":"application/json"},
-    body:JSON.stringify({
-      email:forgotEmail.value,
-      otp:otpInput.value,
-      new_password:newPassword.value
-    })
-  });
-  const data = await res.json();
-  showMessage(data.message || data.error, !res.ok);
-  if(res.ok){
-    showLogin();
-    forgotForm.reset();
-    otpSection.style.display="none";
-    newPassSection.style.display="none";
-  }
+try{
+const res=await fetch(`${API_BASE_URL}/reset-password`,{
+method:"POST",
+headers:{"Content-Type":"application/json"},
+body:JSON.stringify({
+email:forgotEmail.value,
+otp:otpInput.value,
+new_password:newPassword.value
+})
+});
+const data=await res.json().catch(()=>({}));
+if(!res.ok) return showMessage(data.message||"Update failed",true);
+showMessage("Password updated");
+forgotForm.reset();
+otpSection.style.display="none";
+newPassSection.style.display="none";
+showLogin();
+}catch(err){showMessage("Server error",true);}
 }
 </script>
 

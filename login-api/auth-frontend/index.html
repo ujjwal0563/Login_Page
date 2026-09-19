@@ -1,356 +1,396 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Real Nest Auth</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Real Nest Auth</title>
 
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 
-<style>
-*{
-  margin:0;
-  padding:0;
-  box-sizing:border-box;
-  font-family:'Poppins',sans-serif;
-}
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
 
-video{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  z-index:-2;
-}
+    video {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      z-index: -2;
+    }
 
-.overlay{
-  position:fixed;
-  top:0;
-  left:0;
-  width:100%;
-  height:100%;
-  background:rgba(0,0,0,0.6);
-  z-index:-1;
-}
+    .overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.6);
+      z-index: -1;
+    }
 
-.wrapper{
-  min-height:100vh;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  padding:20px;
-}
+    .wrapper {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
 
-.card{
-  width:100%;
-  max-width:450px;
-  background:rgba(255,255,255,0.12);
-  backdrop-filter:blur(15px);
-  border-radius:20px;
-  padding:35px 30px;
-  box-shadow:0 15px 40px rgba(0,0,0,0.4);
-  color:white;
-}
+    .card {
+      width: 100%;
+      max-width: 450px;
+      background: rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(15px);
+      border-radius: 20px;
+      padding: 35px 30px;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+      color: white;
+    }
 
-.message-box{
-  padding:10px 15px;
-  border-radius:10px;
-  font-size:14px;
-  margin-bottom:15px;
-  display:none;
-  background:rgba(255,255,255,0.15);
-  border:1px solid rgba(255,255,255,0.3);
-  color:white;
-}
+    .message-box {
+      padding: 10px 15px;
+      border-radius: 10px;
+      font-size: 14px;
+      margin-bottom: 15px;
+      display: none;
+      background: rgba(255, 255, 255, 0.15);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+      color: white;
+    }
 
-.input-group{
-  margin-bottom:15px;
-}
+    .input-group {
+      margin-bottom: 15px;
+    }
 
-.input-group label{
-  font-size:13px;
-  display:block;
-  margin-bottom:5px;
-}
+    .input-group label {
+      font-size: 13px;
+      display: block;
+      margin-bottom: 5px;
+    }
 
-.input-group input{
-  width:100%;
-  padding:12px 15px;
-  border-radius:25px;
-  border:none;
-  outline:none;
-  font-size:14px;
-}
+    .input-group input {
+      width: 100%;
+      padding: 12px 15px;
+      border-radius: 25px;
+      border: none;
+      outline: none;
+      font-size: 14px;
+      background: white;
+      color: #333;
+    }
 
-.main-btn{
-  width:100%;
-  padding:12px;
-  border:none;
-  border-radius:25px;
-  background:white;
-  color:#333;
-  cursor:pointer;
-  margin-top:5px;
-  transition:0.2s;
-}
+    /* Remove browser default yellow autofill background */
+    input:-webkit-autofill,
+    input:-webkit-autofill:hover, 
+    input:-webkit-autofill:focus,
+    input:-webkit-autofill:active,
+    input:autofill {
+      -webkit-box-shadow: 0 0 0 1000px white inset !important;
+      -webkit-text-fill-color: #333 !important;
+      box-shadow: 0 0 0 1000px white inset !important;
+      color: #333 !important;
+      transition: background-color 5000s ease-in-out 0s;
+    }
 
-.main-btn:hover{
-  transform:translateY(-2px);
-}
+    .main-btn {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 25px;
+      background: white;
+      color: #333;
+      cursor: pointer;
+      margin-top: 5px;
+      transition: 0.2s;
+    }
 
-.secondary-btn{
-  width:100%;
-  padding:10px;
-  border-radius:25px;
-  border:1px solid white;
-  background:transparent;
-  color:white;
-  margin-top:10px;
-  cursor:pointer;
-}
+    .main-btn:hover {
+      transform: translateY(-2px);
+    }
 
-.toggle-text{
-  text-align:center;
-  margin-top:15px;
-  font-size:14px;
-}
+    .secondary-btn {
+      width: 100%;
+      padding: 10px;
+      border-radius: 25px;
+      border: 1px solid white;
+      background: transparent;
+      color: white;
+      margin-top: 10px;
+      cursor: pointer;
+    }
 
-.toggle-text span{
-  color:#8cc8ff;
-  cursor:pointer;
-  font-weight:500;
-}
+    .toggle-text {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
 
-#signupForm,
-#forgotForm{
-  display:none;
-}
-</style>
+    .toggle-text span {
+      color: #8cc8ff;
+      cursor: pointer;
+      font-weight: 500;
+    }
+
+    #signupForm,
+    #forgotForm {
+      display: none;
+    }
+  </style>
 </head>
 
 <body>
 
-<video autoplay muted loop playsinline>
-  <source src="https://media.istockphoto.com/id/1315388795/video/flying-through-emerging-digital-structures-blue-loopable-data-network-virtual-reality-quantum.mp4?s=mp4-640x640-is&k=20&c=YOcxqKZzmSRYHCTkzQgtAKAKGC6E1L5QWNB7ecOspnk=" type="video/mp4">
-</video>
+  <video autoplay muted loop playsinline>
+    <source
+      src="https://media.istockphoto.com/id/1315388795/video/flying-through-emerging-digital-structures-blue-loopable-data-network-virtual-reality-quantum.mp4?s=mp4-640x640-is&k=20&c=YOcxqKZzmSRYHCTkzQgtAKAKGC6E1L5QWNB7ecOspnk="
+      type="video/mp4">
+  </video>
 
-<div class="overlay"></div>
+  <div class="overlay"></div>
 
-<div class="wrapper">
-<div class="card">
+  <div class="wrapper">
+    <div class="card">
 
-<div id="messageBox" class="message-box"></div>
+      <div id="messageBox" class="message-box"></div>
 
-<!-- LOGIN -->
-<form id="loginForm">
-<h1>Login</h1>
+      <!-- LOGIN -->
+      <form id="loginForm" autocomplete="off">
+        <h1>Login</h1>
 
-<div class="input-group">
-<label>Email</label>
-<input type="email" id="loginEmail" required>
-</div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="loginEmail" autocomplete="off" required>
+        </div>
 
-<div class="input-group">
-<label>Password</label>
-<input type="password" id="loginPassword" required>
-</div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="loginPassword" autocomplete="current-password" required>
+        </div>
 
-<button type="submit" class="main-btn">Login</button>
+        <button type="submit" class="main-btn">Login</button>
 
-<div class="toggle-text">
-Don't have account?
-<span onclick="showSignup()">Register</span>
-</div>
+        <div class="toggle-text">
+          Don't have account?
+          <span onclick="showSignup()">Register</span>
+        </div>
 
-<div class="toggle-text">
-<span onclick="showForgot()">Forgot Password?</span>
-</div>
-</form>
+        <div class="toggle-text">
+          <span onclick="showForgot()">Forgot Password?</span>
+        </div>
+      </form>
 
-<!-- SIGNUP -->
-<form id="signupForm">
-<h1>Register</h1>
+      <!-- SIGNUP -->
+      <form id="signupForm" autocomplete="off">
+        <h1>Register</h1>
 
-<div class="input-group">
-<label>Name</label>
-<input type="text" id="signupName" required>
-</div>
+        <div class="input-group">
+          <label>Name</label>
+          <input type="text" id="signupName" autocomplete="off" required>
+        </div>
 
-<div class="input-group">
-  <label>Username</label>
-  <input type="text" id="signupUsername" required>  
-</div>
- 
-<div class="input-group">
-<label>Phone</label>
-<input type="text" id="signupPhone" required>
-</div>
+        <div class="input-group">
+          <label>Username</label>
+          <input type="text" id="signupUsername" autocomplete="off" required>
+        </div>
 
+        <div class="input-group">
+          <label>Phone</label>
+          <input type="text" id="signupPhone" autocomplete="off" required>
+        </div>
 
-<div class="input-group">
-<label>Email</label>
-<input type="email" id="signupEmail" required>
-</div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="signupEmail" autocomplete="off" required>
+        </div>
 
-<div class="input-group">
-<label>Password</label>
-<input type="password" id="signupPassword" required>
-</div>
+        <div class="input-group">
+          <label>Password</label>
+          <input type="password" id="signupPassword" autocomplete="new-password" required>
+        </div>
 
-<button type="submit" class="main-btn">Register</button>
+        <button type="submit" class="main-btn">Register</button>
 
-<div class="toggle-text">
-Already have account?
-<span onclick="showLogin()">Login</span>
-</div>
-</form>
+        <div class="toggle-text">
+          Already have account?
+          <span onclick="showLogin()">Login</span>
+        </div>
+      </form>
 
-<!-- FORGOT PASSWORD -->
-<form id="forgotForm">
-<h1>Reset Password</h1>
+      <!-- FORGOT PASSWORD -->
+      <form id="forgotForm" autocomplete="off">
+        <h1>Reset Password</h1>
 
-<div class="input-group">
-<label>Email</label>
-<input type="email" id="forgotEmail" required>
-</div>
+        <div class="input-group">
+          <label>Email</label>
+          <input type="email" id="forgotEmail" autocomplete="off" required>
+        </div>
 
-<button type="button" class="main-btn" onclick="sendOTP()">Send OTP</button>
+        <button type="button" class="main-btn" onclick="sendOTP()">Send OTP</button>
 
-<div id="otpSection" style="display:none;">
-<div class="input-group">
-<label>Enter OTP</label>
-<input type="text" id="otpInput">
-</div>
-</div>
+        <div id="otpSection" style="display:none;">
+          <div class="input-group">
+            <label>Enter OTP</label>
+            <input type="text" id="otpInput" autocomplete="one-time-code">
+          </div>
+        </div>
 
-<div id="newPassSection" style="display:none;">
-<div class="input-group">
-<label>New Password</label>
-<input type="password" id="newPassword">
-</div>
-<button type="button" class="main-btn" onclick="resetPassword()">Update Password</button>
-</div>
+        <div id="newPassSection" style="display:none;">
+          <div class="input-group">
+            <label>New Password</label>
+            <input type="password" id="newPassword" autocomplete="new-password">
+          </div>
+          <button type="button" class="main-btn" onclick="resetPassword()">Update Password</button>
+        </div>
 
-<button type="button" class="secondary-btn" onclick="showLogin()">Back</button>
-</form>
+        <button type="button" class="secondary-btn" onclick="showLogin()">Back</button>
+      </form>
 
-</div>
-</div>
+    </div>
+  </div>
 
-<script>
-const API_BASE_URL="https://login-api-m00t.onrender.com";
+  <script>
+    const API_BASE_URL = window.location.protocol.startsWith("http")
+      ? window.location.origin
+      : "http://localhost:8081";
 
-const loginForm=document.getElementById("loginForm");
-const signupForm=document.getElementById("signupForm");
-const forgotForm=document.getElementById("forgotForm");
-const messageBox=document.getElementById("messageBox");
+    const loginForm = document.getElementById("loginForm");
+    const signupForm = document.getElementById("signupForm");
+    const forgotForm = document.getElementById("forgotForm");
+    const messageBox = document.getElementById("messageBox");
 
-function showMessage(msg,isError=false){
-messageBox.style.display="block";
-messageBox.textContent=msg;
-messageBox.style.color=isError?"#ffb3b3":"#b6ffb3";
-setTimeout(()=>{messageBox.style.display="none"},4000);
-}
+    function showMessage(msg, isError = false) {
+      messageBox.style.display = "block";
+      messageBox.textContent = msg;
+      messageBox.style.color = isError ? "#ffb3b3" : "#b6ffb3";
+      setTimeout(() => { messageBox.style.display = "none" }, 4000);
+    }
 
-function showSignup(){
-loginForm.style.display="none";
-forgotForm.style.display="none";
-signupForm.style.display="block";
-}
+    function clearCredentials() {
+      if (loginForm) loginForm.reset();
+      if (signupForm) signupForm.reset();
+      if (forgotForm) forgotForm.reset();
+      const lp = document.getElementById("loginPassword");
+      if (lp) lp.value = "";
+      const sp = document.getElementById("signupPassword");
+      if (sp) sp.value = "";
+    }
 
-function showLogin(){
-signupForm.style.display="none";
-forgotForm.style.display="none";
-loginForm.style.display="block";
-}
+    window.addEventListener("DOMContentLoaded", clearCredentials);
+    window.addEventListener("load", () => {
+      setTimeout(clearCredentials, 50);
+      setTimeout(clearCredentials, 250);
+    });
 
-function showForgot(){
-loginForm.style.display="none";
-signupForm.style.display="none";
-forgotForm.style.display="block";
-}
+    function showSignup() {
+      loginForm.style.display = "none";
+      forgotForm.style.display = "none";
+      signupForm.reset();
+      signupForm.style.display = "block";
+    }
 
-/* LOGIN */
-loginForm.addEventListener("submit",async e=>{
-e.preventDefault();
-try{
-const res=await fetch(`${API_BASE_URL}/login`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-email:loginEmail.value,
-password:loginPassword.value
-})
-});
-const data=await res.json().catch(()=>({}));
-if(!res.ok) return showMessage(data.message||"Login failed",true);
-showMessage("Login successful");
-loginForm.reset();
-}catch(err){showMessage("Server error",true);}
-});
+    function showLogin() {
+      signupForm.style.display = "none";
+      forgotForm.style.display = "none";
+      loginForm.reset();
+      loginForm.style.display = "block";
+    }
 
-/* SIGNUP */
-signupForm.addEventListener("submit",async e=>{
-e.preventDefault();
-try{
-const res=await fetch(`${API_BASE_URL}/register`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-name:signupName.value,
-username:signupUsername.value,
-phone:signupPhone.value,
-email:signupEmail.value,
-password:signupPassword.value
-})
-});
-const data=await res.json().catch(()=>({}));
-if(!res.ok) return showMessage(data.message||"Signup failed",true);
-showMessage("Account created successfully");
-signupForm.reset();
-showLogin();
-}catch(err){showMessage("Server error",true);}
-});
+    function showForgot() {
+      loginForm.style.display = "none";
+      signupForm.style.display = "none";
+      forgotForm.reset();
+      forgotForm.style.display = "block";
+    }
 
-/* OTP FLOW */
-async function sendOTP(){
-try{
-const res=await fetch(`${API_BASE_URL}/forgot-password`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({email:forgotEmail.value})
-});
-const data=await res.json().catch(()=>({}));
-if(!res.ok) return showMessage(data.message||"OTP send failed",true);
-otpSection.style.display="block";
-newPassSection.style.display="block";
-showMessage("OTP sent");
-}catch(err){showMessage("Server error",true);}
-}
+    /* LOGIN */
+    loginForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      try {
+        const res = await fetch(`${API_BASE_URL}/login`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: loginEmail.value,
+            password: loginPassword.value
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) return showMessage(data.error || data.message || "Login failed", true);
+        showMessage(data.message || "Login successful");
+        loginForm.reset();
+      } catch (err) { showMessage("Server error", true); }
+    });
 
-async function resetPassword(){
-try{
-const res=await fetch(`${API_BASE_URL}/reset-password`,{
-method:"POST",
-headers:{"Content-Type":"application/json"},
-body:JSON.stringify({
-email:forgotEmail.value,
-otp:otpInput.value,
-new_password:newPassword.value
-})
-});
-const data=await res.json().catch(()=>({}));
-if(!res.ok) return showMessage(data.message||"Update failed",true);
-showMessage("Password updated");
-forgotForm.reset();
-otpSection.style.display="none";
-newPassSection.style.display="none";
-showLogin();
-}catch(err){showMessage("Server error",true);}
-}
-</script>
+    /* SIGNUP */
+    signupForm.addEventListener("submit", async e => {
+      e.preventDefault();
+      try {
+        const res = await fetch(`${API_BASE_URL}/signup`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: signupName.value,
+            username: signupUsername.value,
+            phone_number: signupPhone.value,
+            phone: signupPhone.value,
+            email: signupEmail.value,
+            password: signupPassword.value
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) return showMessage(data.error || data.message || "Signup failed", true);
+        showMessage(data.message || "Account created successfully");
+        signupForm.reset();
+        showLogin();
+      } catch (err) { showMessage("Server error", true); }
+    });
+
+    /* OTP FLOW */
+    async function sendOTP() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/forgot-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ email: forgotEmail.value })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) return showMessage(data.error || data.message || "OTP send failed", true);
+        otpSection.style.display = "block";
+        newPassSection.style.display = "block";
+        showMessage("OTP sent");
+      } catch (err) { showMessage("Server error", true); }
+    }
+
+    async function resetPassword() {
+      try {
+        const res = await fetch(`${API_BASE_URL}/reset-password`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            email: forgotEmail.value,
+            otp: otpInput.value,
+            new_password: newPassword.value
+          })
+        });
+        const data = await res.json().catch(() => ({}));
+        if (!res.ok) return showMessage(data.error || data.message || "Update failed", true);
+        showMessage(data.message || "Password updated");
+        forgotForm.reset();
+        otpSection.style.display = "none";
+        newPassSection.style.display = "none";
+        showLogin();
+      } catch (err) { showMessage("Server error", true); }
+    }
+  </script>
 
 </body>
+
 </html>

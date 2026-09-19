@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -22,9 +23,11 @@ type LoginRequest struct {
 type SignupRequest struct {
 	Name        string `json:"name"`
 	Surname     string `json:"surname"`
+	Username    string `json:"username"`
 	Email       string `json:"email"`
 	Password    string `json:"password"`
 	PhoneNumber string `json:"phone_number"`
+	Phone       string `json:"phone"`
 }
 
 func Login(c *gin.Context) {
@@ -115,15 +118,20 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	// Handle empty phone number to avoid unique index conflicts
+	// Handle phone and username fallbacks
 	phoneNumber := req.PhoneNumber
 	if phoneNumber == "" {
-		phoneNumber = ""
+		phoneNumber = req.Phone
+	}
+	username := req.Username
+	if username == "" {
+		username = req.Surname
 	}
 
 	user := models.User{
 		Name:        req.Name,
 		Surname:     req.Surname,
+		Username:    username,
 		Email:       req.Email,
 		Password:    hashedPassword,
 		PhoneNumber: phoneNumber,
@@ -139,7 +147,8 @@ func Signup(c *gin.Context) {
 		return
 	}
 
-	fmt.Println("Signup request data:", req)
+	// User successfully created
+	log.Printf("User registered successfully: %s\n", user.Email)
 
 	c.JSON(http.StatusCreated, gin.H{
 		"message": "Signup successful",

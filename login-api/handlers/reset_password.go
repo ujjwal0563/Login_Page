@@ -42,6 +42,13 @@ func ResetPassword(c *gin.Context) {
 		return
 	}
 
+	if user.IsBlackListed || user.BlackList {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "Your account has been blacklisted. Please contact administrator.",
+		})
+		return
+	}
+
 	//  OTP requested check
 	if user.ResetOTPHash == "" || user.OTPExpiresAt.IsZero() {
 		c.JSON(http.StatusBadRequest, gin.H{

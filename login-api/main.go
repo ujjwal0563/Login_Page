@@ -8,30 +8,41 @@ import (
 	"login-api/handlers"
 	middlewares "login-api/middleware"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/joho/godotenv"
-	"github.com/gin-contrib/cors"
 )
 
 func main() {
 	if err := godotenv.Load(); err != nil {
 		log.Println("No .env file found (running in production)")
 	}
+
 	db.ConnectMongo()
 
 	r := gin.Default()
 
-    r.Use(cors.Default())
+	r.Use(cors.Default())
 
 	r.POST("/signup", handlers.Signup)
 	r.POST("/register", handlers.Signup)
+
 	r.POST("/login",
 		middlewares.LoginLimiter(),
 		handlers.Login,
 	)
+
 	r.POST("/logout", handlers.Logout)
 	r.POST("/forgot-password", handlers.ForgotPassword)
 	r.POST("/reset-password", handlers.ResetPassword)
+
+	// Blacklist / Unblacklist & User Management
+	r.POST("/admin/blacklist", handlers.BlacklistUser(db.UserCollection))
+	r.POST("/admin/unblacklist", handlers.UnblacklistUser(db.UserCollection))
+	r.GET("/admin/users", handlers.ListUsers(db.UserCollection))
+	r.PUT("/admin/users/:id/blacklist", handlers.BlacklistUser(db.UserCollection))
+	r.PUT("/admin/users/:id/unblacklist", handlers.UnblacklistUser(db.UserCollection))
+	r.GET("/admin/users/:id/blacklist", handlers.GetBlacklistStatus(db.UserCollection))
 
 	// Serve frontend UI
 	r.StaticFile("/", "./auth-frontend/index.html")
@@ -42,8 +53,10 @@ func main() {
 		port = "8080"
 	}
 
-	log.Printf("\n\n==================================================\n🚀 Server running! Open in Firefox or your browser:\n👉 http://localhost:%s\n==================================================\n\n", port)
+	log.Printf(
+		"\n\n==================================================\n🚀 Server running! Open in Firefox or your browser:\n👉 http://localhost:%s\n==================================================\n\n",
+		port,
+	)
 
 	r.Run(":" + port)
 }
-

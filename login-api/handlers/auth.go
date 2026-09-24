@@ -2,8 +2,6 @@ package handlers
 
 import (
 	"context"
-	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -18,16 +16,6 @@ import (
 type LoginRequest struct {
 	Email    string `json:"email"`
 	Password string `json:"password"`
-}
-
-type SignupRequest struct {
-	Name        string `json:"name"`
-	Surname     string `json:"surname"`
-	Username    string `json:"username"`
-	Email       string `json:"email"`
-	Password    string `json:"password"`
-	PhoneNumber string `json:"phone_number"`
-	Phone       string `json:"phone"`
 }
 
 func Login(c *gin.Context) {
@@ -63,6 +51,14 @@ func Login(c *gin.Context) {
 		return
 	}
 
+	// Check if user is blacklisted in database
+	if user.IsBlackListed || user.BlackList {
+		c.JSON(http.StatusForbidden, gin.H{
+			"error": "You are blacklisted and cannot login",
+		})
+		return
+	}
+
 	if !utils.CheckPassword(user.Password, req.Password) {
 		c.JSON(http.StatusUnauthorized, gin.H{
 			"error":  "Wrong password",
@@ -76,81 +72,5 @@ func Login(c *gin.Context) {
 	c.JSON(http.StatusOK, gin.H{
 		"message": "Login successful",
 		"token":   token,
-	})
-}
-
-func Signup(c *gin.Context) {
-	var req SignupRequest
-
-	if err := c.ShouldBindJSON(&req); err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid request",
-		})
-		return
-	}
-
-	if !utils.IsValidEmail(req.Email) {
-		c.JSON(http.StatusBadRequest, gin.H{
-			"error": "Invalid email format",
-		})
-		return
-	}
-
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	count, _ := db.UserCollection.CountDocuments(ctx, bson.M{
-		"email": req.Email,
-	})
-
-	if count > 0 {
-		c.JSON(http.StatusConflict, gin.H{
-			"error": "User already exists",
-		})
-		return
-	}
-
-	hashedPassword, err := utils.HashPassword(req.Password)
-	if err != nil {
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": "Could not hash password",
-		})
-		return
-	}
-
-	// Handle phone and username fallbacks
-	phoneNumber := req.PhoneNumber
-	if phoneNumber == "" {
-		phoneNumber = req.Phone
-	}
-	username := req.Username
-	if username == "" {
-		username = req.Surname
-	}
-
-	user := models.User{
-		Name:        req.Name,
-		Surname:     req.Surname,
-		Username:    username,
-		Email:       req.Email,
-		Password:    hashedPassword,
-		PhoneNumber: phoneNumber,
-		CreatedAt:   time.Now(),
-	}
-
-	_, err = db.UserCollection.InsertOne(ctx, user)
-	if err != nil {
-		fmt.Printf("InsertOne error: %v\n", err)
-		c.JSON(http.StatusInternalServerError, gin.H{
-			"error": fmt.Sprintf("User creation failed: %v", err),
-		})
-		return
-	}
-
-	// User successfully created
-	log.Printf("User registered successfully: %s\n", user.Email)
-
-	c.JSON(http.StatusCreated, gin.H{
-		"message": "Signup successful",
 	})
 }
